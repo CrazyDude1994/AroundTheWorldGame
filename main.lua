@@ -52,9 +52,11 @@ function love.update(dt)
 	end
 
 	if love.keyboard.isDown("a") then
-		objects.drawable.thePlayer.moveClockWise(3 * dt)
+		objects.drawable.thePlayer.moveClockWise(30 * dt)
+		objects.cameras.mainCamera.setPosition(objects.drawable.thePlayer.x, objects.drawable.thePlayer.y)
 	elseif love.keyboard.isDown("d") then
-		objects.drawable.thePlayer.moveCounterClockWise(3 * dt)
+		objects.drawable.thePlayer.moveCounterClockWise(30 * dt)
+		objects.cameras.mainCamera.setPosition(objects.drawable.thePlayer.x, objects.drawable.thePlayer.y)
 	end
 
 	if love.keyboard.isDown("w") then

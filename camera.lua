@@ -54,11 +54,10 @@ function Camera.init(x, y, scaleX, scaleY)
 
 	function self.update()
 		love.graphics.setBackgroundColor(255, 255, 255, 255)
-
 		love.graphics.translate(-self.x + (screenX / 2), -self.y + (screenY / 2))
-		love.graphics.push()
-		love.graphics.scale(2, 2)
-		love.graphics.pop()
+		love.graphics.translate(self.x, self.y)
+		love.graphics.scale(self.scaleX, self.scaleY)
+		love.graphics.translate(-self.x, -self.y)
 	end
 
 	return self
