@@ -18,14 +18,24 @@ function Player.init(planet, rotation)
 	function self.draw()
 		love.graphics.push()
 		love.graphics.setColor(255, 255, 255, 255)
-		love.graphics.translate(planet.x, planet.y)
+		--love.graphics.translate(planet.x, planet.y)
 		love.graphics.translate(self.x, self.y)
-		love.graphics.draw(self.sprites.front, 0, 0, -math.rad(self.rotation + 180))
+		love.graphics.draw(self.sprites.front, 0, 0, -math.rad(self.rotation + 180), 1, 1, 16, 32)
 		love.graphics.pop()
 	end
 
 	function self.updatePos()
 		self.x, self.y = getXYFromRadian(self.rotation, planet.radius, 0)
+	end
+
+	function self.moveClockWise(distance)
+		self.rotation = self.rotation + distance
+		self.updatePos()
+	end
+
+	function self.moveCounterClockWise(distance)
+		self.rotation = self.rotation - distance
+		self.updatePos()
 	end
 
 	return self

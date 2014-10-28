@@ -1,3 +1,5 @@
+local screenX, screenY = love.graphics.getWidth(), love.graphics.getHeight()
+
 Camera = {}
 
 function Camera.init(x, y, scaleX, scaleY)
@@ -51,8 +53,12 @@ function Camera.init(x, y, scaleX, scaleY)
 	end
 
 	function self.update()
-		love.graphics.scale(self.scaleX, self.scaleY)
-		love.graphics.translate(-self.x, -self.y)
+		love.graphics.setBackgroundColor(255, 255, 255, 255)
+
+		love.graphics.translate(-self.x + (screenX / 2), -self.y + (screenY / 2))
+		love.graphics.push()
+		love.graphics.scale(2, 2)
+		love.graphics.pop()
 	end
 
 	return self
