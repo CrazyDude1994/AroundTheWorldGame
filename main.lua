@@ -3,6 +3,7 @@ require "util"
 require "planet"
 require "camera"
 require "player"
+require "donut"
 
 io.stdout:setvbuf("no")
 
@@ -20,6 +21,8 @@ local objects = {
 	--world = love.physics.newWorld(0, yg, sleep)
 }
 
+debugVars = {}
+
 function love.draw()
 	--World drawing
 	objects.cameras.mainCamera.set()
@@ -28,6 +31,8 @@ function love.draw()
 	end
 	objects.cameras.mainCamera.unset()
 	--UI Drawing
+	--Debug drawring
+	debug.draw()
 	--todo
 end
 
@@ -35,9 +40,15 @@ function love.load()
 	objects.drawable.thePlayer = Player.init(objects.drawable.planet, 0)
 	objects.cameras.mainCamera.setPosition(objects.drawable.thePlayer.x, objects.drawable.thePlayer.y)
 	objects.drawable.planet.randomizeShape(100, 10)
+
+	--Enable debug
+	debug = Donut.init(10, 10)
+	debugVars.playerRotation = debug.add("Player rotation")
 end
 
 function love.update(dt)
+	debug.update(debugVars.playerRotation, objects.drawable.thePlayer.rotation)
+
 	if love.keyboard.isDown("up") then
 		objects.cameras.mainCamera.move(0, -100 * dt)
 	end
@@ -52,10 +63,10 @@ function love.update(dt)
 	end
 
 	if love.keyboard.isDown("a") then
-		objects.drawable.thePlayer.moveClockWise(30 * dt)
+		objects.drawable.thePlayer.moveClockWise(1 * dt)
 		objects.cameras.mainCamera.setPosition(objects.drawable.thePlayer.x, objects.drawable.thePlayer.y)
 	elseif love.keyboard.isDown("d") then
-		objects.drawable.thePlayer.moveCounterClockWise(30 * dt)
+		objects.drawable.thePlayer.moveCounterClockWise(1 * dt)
 		objects.cameras.mainCamera.setPosition(objects.drawable.thePlayer.x, objects.drawable.thePlayer.y)
 	end
 

@@ -30,7 +30,7 @@ function Donut.init(x, y)
 	self.__stepSize = 20
 	self.__debugMode = true
 	self.__color = {
-		r = 255, g = 255, b = 255
+		r = 0, g = 100, b = 0
 	}
 
 	function self.add(msg)

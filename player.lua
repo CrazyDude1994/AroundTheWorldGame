@@ -25,16 +25,25 @@ function Player.init(planet, rotation)
 	end
 
 	function self.updatePos()
+		local rotBefore = math.floor(self.rotation)
+		local rotAfter = math.ceil(self.rotation)
+		local hillBefore = self.planet.hills
 		self.x, self.y = getXYFromRadian(self.rotation, planet.radius, 0)
 	end
 
 	function self.moveClockWise(distance)
 		self.rotation = self.rotation + distance
+		if self.rotation > 360 then
+			self.rotation = self.rotation - 360
+		end
 		self.updatePos()
 	end
 
 	function self.moveCounterClockWise(distance)
 		self.rotation = self.rotation - distance
+		if self.rotation < 0 then
+			self.rotation = 360 - self.rotation
+		end
 		self.updatePos()
 	end
 
