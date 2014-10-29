@@ -11,7 +11,7 @@ local screenX, screenY = love.graphics.getWidth(), love.graphics.getHeight()
 
 local objects = {
 	drawable = {
-		planet = Planet.init(0, 0, 1000)
+		planet = Planet.init(0, 0, 10000)
 	},
 
 	cameras = {
@@ -39,15 +39,16 @@ end
 function love.load()
 	objects.drawable.thePlayer = Player.init(objects.drawable.planet, 0)
 	objects.cameras.mainCamera.setPosition(objects.drawable.thePlayer.x, objects.drawable.thePlayer.y)
-	objects.drawable.planet.randomizeShape(100, 10)
+	objects.drawable.planet.randomizeShape(50)
 
 	--Enable debug
 	debug = Donut.init(10, 10)
-	debugVars.playerRotation = debug.add("Player rotation")
+	debugVars.playerRotation = debug.add("Player position")
+	debugVars.playerRelativeRotation = debug.add("Relative rotation")
 end
 
 function love.update(dt)
-	debug.update(debugVars.playerRotation, objects.drawable.thePlayer.rotation)
+	debug.update(debugVars.playerRotation, objects.drawable.thePlayer.position)
 
 	if love.keyboard.isDown("up") then
 		objects.cameras.mainCamera.move(0, -100 * dt)
@@ -63,10 +64,10 @@ function love.update(dt)
 	end
 
 	if love.keyboard.isDown("a") then
-		objects.drawable.thePlayer.moveClockWise(60 * dt)
+		objects.drawable.thePlayer.moveClockWise(1 * dt)
 		objects.cameras.mainCamera.setPosition(objects.drawable.thePlayer.x, objects.drawable.thePlayer.y)
 	elseif love.keyboard.isDown("d") then
-		objects.drawable.thePlayer.moveCounterClockWise(60 * dt)
+		objects.drawable.thePlayer.moveCounterClockWise(1 * dt)
 		objects.cameras.mainCamera.setPosition(objects.drawable.thePlayer.x, objects.drawable.thePlayer.y)
 	end
 
