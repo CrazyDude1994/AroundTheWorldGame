@@ -28,16 +28,8 @@ function Player.init(planet, rotation)
 	end
 
 	function self.updatePos()
-		local rotBefore = math.floor(self.position)
-		local rotAfter = math.ceil(self.position)
-		if rotAfter == 360 then
-			rotAfter = 0
-		end
-		local hillBefore = self.planet.hills[rotBefore]
-		local hillAfter = self.planet.hills[rotAfter]
-		local t = 1 - math.abs(rotBefore - self.position)
-		self.x = hillBefore[1] * t + hillAfter[1] * (1 - t)
-		self.y = hillBefore[2] * t + hillAfter[2] * (1 - t)
+		self.x, self.y = getRelativePositionToHill(self.position, self.planet)
+		local hillBefore, hillAfter = getBetweenHills(self.position, self.planet)
 		self.relativeRotation = findRotation(hillBefore[1], hillBefore[2], hillAfter[1], hillAfter[2])
 		debug.update(debugVars.playerRelativeRotation, self.relativeRotation)
 	end

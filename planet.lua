@@ -10,6 +10,8 @@ function Planet.init(x, y, radius)
 	self.x = x
 	self.y = y
 	self.hills = {}
+	--Format: x, y, rotation, image
+	self.environment = {} 
 
 	function self.draw()
 		love.graphics.push()
@@ -19,7 +21,22 @@ function Planet.init(x, y, radius)
 			love.graphics.line(self.hills[i][1], self.hills[i][2], self.hills[i + 1][1], self.hills[i + 1][2])
 		end
 		love.graphics.line(self.hills[0][1], self.hills[0][2], self.hills[#self.hills][1], self.hills[#self.hills][2])
+		love.graphics.setColor(255, 255, 255, 255)
+		for i, v in pairs(self.environment) do
+			love.graphics.draw(v[4], v[1], v[2], math.rad(v[3] - 90), 1, 1, 16, 32)
+		end
 		love.graphics.pop()
+	end
+
+	function self.addEnvironment(radius, height, sprite)
+		local image = love.graphics.newImage(sprite)
+		if image then
+			local x, y = getRelativePositionToHill(radius, self)
+			local hillBefore, hillAfter = getBetweenHills(radius, self)
+			local rotation = findRotation(hillBefore[1], hillBefore[2], hillAfter[1], hillAfter[2])
+			table.insert(self.environment, 
+				{x, y, rotation, image})
+		end
 	end
 
 	function self.addHill(radius, height)

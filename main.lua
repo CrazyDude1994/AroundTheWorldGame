@@ -40,6 +40,8 @@ function love.load()
 	objects.drawable.thePlayer = Player.init(objects.drawable.planet, 0)
 	objects.cameras.mainCamera.setPosition(objects.drawable.thePlayer.x, objects.drawable.thePlayer.y)
 	objects.drawable.planet.randomizeShape(50)
+	objects.drawable.planet.addEnvironment(0.5, 0, "data/images/nature/tree_1.png")
+	objects.drawable.planet.addEnvironment(358.5, 0, "data/images/nature/tree_1.png")
 
 	--Enable debug
 	debug = Donut.init(10, 10)
