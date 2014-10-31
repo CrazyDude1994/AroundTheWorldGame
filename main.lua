@@ -64,6 +64,9 @@ function love.update(dt)
 	--Update debug information
 	debug.update(debugVars.playerRotation, objects.drawable.thePlayer.position)
 
+	--Weird solution. Should be changed
+	objects.drawable.thePlayer.update(dt)
+
 	--Move camera controls
 	if love.keyboard.isDown("up") then
 		objects.cameras.mainCamera.move(0, -100 * dt)

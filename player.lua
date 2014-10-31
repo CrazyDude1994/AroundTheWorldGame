@@ -1,4 +1,5 @@
 require "util"
+require "AnAL"
 
 Player = {}
 
@@ -8,22 +9,21 @@ function Player.init(planet, rotation)
 	self.position = rotation
 	self.relativeRotation = 0
 	self.sprites = {}
-	self.state = 0
+	self.sprites.animations = {}
+	self.animations = {}
+	--Player state, -1 = left, 1 = right, 0 = null
+	self.state = -1
 	self.planet = planet
 	self.x, self.y = getXYFromRadian(rotation, planet.radius, 0)
 	love.graphics.setDefaultFilter("nearest", "nearest")
-	self.sprites.left = love.graphics.newImage("data/images/player/thePlayer_left.png")
-	self.sprites.right = love.graphics.newImage("data/images/player/thePlayer_right.png")
+	self.sprites.idle = love.graphics.newImage("data/images/player/thePlayer_right.png")
 
 	function self.draw()
 		love.graphics.push()
 		love.graphics.setColor(255, 255, 255, 255)
 		love.graphics.translate(self.x, self.y)
-		if self.state == -1 then
-			love.graphics.draw(self.sprites.left, 0, 0, math.rad(self.relativeRotation - 90), 1, 1, 16, 32)
-		elseif self.state == 1 then
-		    love.graphics.draw(self.sprites.right, 0, 0, math.rad(self.relativeRotation - 90), 1, 1, 16, 32)
-		end
+		self.animations.walk:draw(0, 0, math.rad(self.relativeRotation - 90), self.state, 1, 16, 32)
+		--love.graphics.draw(self.sprites.idle, 0, 0, math.rad(self.relativeRotation - 90), self.state, 1, 16, 32)
 		love.graphics.pop()
 	end
 
@@ -51,6 +51,21 @@ function Player.init(planet, rotation)
 		end
 		self.updatePos()
 	end
+
+	function self.update(dt)
+		self.animations.walk:update(dt)
+	end
+
+	function self.loadAnimation(name, image, height, width, duration, onLoop)
+		local image = love.graphics.newImage(image)
+		if image then
+			self.sprites.animations[name] = image
+			local animation = newAnimation(image, width, height, 0.1, 9)
+			self.animations[name] = animation
+		end
+	end
+
+	self.loadAnimation("walk", "data/images/player/thePlayer_walk.png", 32, 32, 0.1)
 
 	return self
 
