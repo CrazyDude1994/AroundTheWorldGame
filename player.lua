@@ -13,6 +13,7 @@ function Player.init(planet, rotation)
 	self.animations = {}
 	--Player state, -1 = left, 1 = right, 0 = null
 	self.state = -1
+	self.lastState = -1
 	self.planet = planet
 	self.x, self.y = getXYFromRadian(rotation, planet.radius, 0)
 	love.graphics.setDefaultFilter("nearest", "nearest")
@@ -22,8 +23,11 @@ function Player.init(planet, rotation)
 		love.graphics.push()
 		love.graphics.setColor(255, 255, 255, 255)
 		love.graphics.translate(self.x, self.y)
-		self.animations.walk:draw(0, 0, math.rad(self.relativeRotation - 90), self.state, 1, 16, 32)
-		--love.graphics.draw(self.sprites.idle, 0, 0, math.rad(self.relativeRotation - 90), self.state, 1, 16, 32)
+		if self.state == 0 then
+			love.graphics.draw(self.sprites.idle, 0, 0, math.rad(self.relativeRotation - 90), self.lastState, 1, 16, 32)
+		else
+			self.animations.walk:draw(0, 0, math.rad(self.relativeRotation - 90), self.state, 1, 16, 32)
+		end
 		love.graphics.pop()
 	end
 
@@ -36,6 +40,7 @@ function Player.init(planet, rotation)
 
 	function self.moveClockWise(distance)
 		self.state = -1
+		self.lastState = -1
 		self.position = self.position + distance
 		if self.position > 360 then
 			self.position = self.position - 360
@@ -45,11 +50,16 @@ function Player.init(planet, rotation)
 
 	function self.moveCounterClockWise(distance)
 		self.state = 1
+		self.lastState = 1
 		self.position = self.position - distance
 		if self.position < 0 then
 			self.position = 360 + self.position
 		end
 		self.updatePos()
+	end
+
+	function self.stop()
+		self.state = 0
 	end
 
 	function self.update(dt)

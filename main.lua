@@ -90,6 +90,8 @@ function love.update(dt)
 		objects.drawable.thePlayer.moveCounterClockWise(1 * dt)
 		objects.cameras.mainCamera.setPosition(objects.drawable.thePlayer.x, objects.drawable.thePlayer.y)
 		objects.cameras.mainCamera.setRotation(objects.drawable.thePlayer.position - 180)
+	else
+		objects.drawable.thePlayer.stop()
 	end
 
 	--Scale camera controls
