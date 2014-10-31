@@ -6,50 +6,67 @@ Planet = {}
 function Planet.init(x, y, radius)
 	local self = {}
 
-	self.radius = radius
-	self.x = x
-	self.y = y
-	self.hills = {}
-	--Format: x, y, rotation, image
-	self.environment = {} 
+	self.radius = radius --Planet radius
+	self.x = x --Planet X position in world coordinates
+	self.y = y --Planet Y position in world coordinates
+	--Format: key = rotation, value - {x, y}
+	self.hills = {} --Planet hills information
+	--Format: value = {x, y, rotation, image}
+	self.environment = {} --Planet environment information
 
+
+	--Function for drawing planet
 	function self.draw()
+		--Push matrix
 		love.graphics.push()
 		love.graphics.setColor(0, 0, 0, 255)
+		--Move drawing context to planet position
 		love.graphics.translate(self.x, self.y)
+		--Draw all of it hills
 		for i = 0, 358 do
-			love.graphics.line(self.hills[i][1], self.hills[i][2], self.hills[i + 1][1], self.hills[i + 1][2])
+			love.graphics.line(self.hills[i].x, self.hills[i].y, self.hills[i + 1].x, self.hills[i + 1].y)
 		end
-		love.graphics.line(self.hills[0][1], self.hills[0][2], self.hills[#self.hills][1], self.hills[#self.hills][2])
+		--Draw first and the last one hills
+		love.graphics.line(self.hills[0].x, self.hills[0].y, self.hills[#self.hills].x, self.hills[#self.hills].y)
 		love.graphics.setColor(255, 255, 255, 255)
+		--Draw planet environment
 		for i, v in pairs(self.environment) do
-			love.graphics.draw(v[4], v[1], v[2], math.rad(v[3] - 90), 1, 1, 16, 32)
+			love.graphics.draw(v.image, v.x, v.y, math.rad(v.rotation - 90), 1, 1, 16, 32)
 		end
+		--Pop matrix back
 		love.graphics.pop()
 	end
 
-	function self.addEnvironment(radius, height, sprite)
+	--Function that adds environment to the planet
+	function self.addEnvironment(rotation, height, sprite)
+		--Try to load image
 		local image = love.graphics.newImage(sprite)
 		if image then
-			local x, y = getRelativePositionToHill(radius, self)
-			local hillBefore, hillAfter = getBetweenHills(radius, self)
-			local rotation = findRotation(hillBefore[1], hillBefore[2], hillAfter[1], hillAfter[2])
+			--Get X,Y position from rotation
+			local x, y = getRelativePositionToHill(rotation, self)
+			--Get hills that are after and before rotation
+			local hillBefore, hillAfter = getBetweenHills(rotation, self)
+			--Get relative rotation of environment to the planet hill
+			local rotation = findRotation(hillBefore.x, hillBefore.y, hillAfter.x, hillAfter.y)
 			table.insert(self.environment, 
-				{x, y, rotation, image})
+				{x = x, y = y, rotation = rotation, image = image})
 		end
 	end
 
-	function self.addHill(radius, height)
-		local x, y = getXYFromRadian(radius, self.radius, height)
-		self.hills[radius] = {x, y}
+	--Function that adds hill to the planet
+	function self.addHill(rotation, height)
+		local x, y = getXYFromRadian(rotation, self.radius, height)
+		self.hills[rotation] = {x = x, y = y}
 	end
 
+	--Randomize shape. For testing purposes only. Should be depricated and changed to mid-replacement algorithm
 	function self.randomizeShape(max, step, min)
 		for i = 0, 359, step or 1 do
 			self.addHill(i, love.math.random(min or 0, max))
 		end
 	end
 
+	--Init planet shape
 	for i = 0, 359 do
 		self.addHill(i, 0)
 	end

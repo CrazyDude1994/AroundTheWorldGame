@@ -7,42 +7,53 @@ require "donut"
 
 io.stdout:setvbuf("no")
 
+--Get screen size
 local screenX, screenY = love.graphics.getWidth(), love.graphics.getHeight()
 
+--Table of the world objects
 local objects = {
+	--Objects that need to be drawed. Must have Draw method
 	drawable = {
 		planet = Planet.init(0, 0, 10000)
 	},
 
+	--Table of cameras
 	cameras = {
 		mainCamera = Camera.init(0, 0, 1, 1)
 	}
-
-	--world = love.physics.newWorld(0, yg, sleep)
 }
 
+--Table of the variables that need to be debugged.
 debugVars = {}
 
+--Main drawing function
 function love.draw()
 	--World drawing
+	--Set camera
 	objects.cameras.mainCamera.set()
+	--Draw all world objects
 	for i, v in pairs(objects.drawable) do
 		v.draw()
 	end
+	--Unset camera
 	objects.cameras.mainCamera.unset()
 	--UI Drawing
 	--Debug drawring
 	debug.draw()
-	--todo
 end
 
+--Main load function
 function love.load()
+	--Create player on start
 	objects.drawable.thePlayer = Player.init(objects.drawable.planet, 0)
+	--Set camera position to look at player
 	objects.cameras.mainCamera.setPosition(objects.drawable.thePlayer.x, objects.drawable.thePlayer.y)
+	--Randomize main planet shape
 	objects.drawable.planet.randomizeShape(50)
-	objects.drawable.planet.addEnvironment(0.5, 0, "data/images/nature/tree_1.png")
-	objects.drawable.planet.addEnvironment(358.5, 0, "data/images/nature/tree_1.png")
-
+	--Add trees to planet
+	for i = 0, 359 * 2 do
+		objects.drawable.planet.addEnvironment(i / 2 + 0.25, 0, "data/images/nature/tree_1.png")
+	end
 	--Enable debug
 	debug = Donut.init(10, 10)
 	debugVars.playerRotation = debug.add("Player position")
@@ -50,8 +61,10 @@ function love.load()
 end
 
 function love.update(dt)
+	--Update debug information
 	debug.update(debugVars.playerRotation, objects.drawable.thePlayer.position)
 
+	--Move camera controls
 	if love.keyboard.isDown("up") then
 		objects.cameras.mainCamera.move(0, -100 * dt)
 	end
@@ -65,6 +78,7 @@ function love.update(dt)
 		objects.cameras.mainCamera.move(100 * dt, 0)
 	end
 
+	--Player movement controls
 	if love.keyboard.isDown("a") then
 		objects.drawable.thePlayer.moveClockWise(1 * dt)
 		objects.cameras.mainCamera.setPosition(objects.drawable.thePlayer.x, objects.drawable.thePlayer.y)
@@ -75,6 +89,7 @@ function love.update(dt)
 		objects.cameras.mainCamera.setRotation(objects.drawable.thePlayer.position - 180)
 	end
 
+	--Scale camera controls
 	if love.keyboard.isDown("w") then
 		objects.cameras.mainCamera.scale(2 * dt, 2 * dt)
 	elseif love.keyboard.isDown("s") then

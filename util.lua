@@ -12,8 +12,8 @@ function getRelativePositionToHill(rotation, planet)
 	local rotBefore, rotAfter = getBetweenRotations(rotation, planet)
 	local hillBefore, hillAfter = getBetweenHills(rotation, planet)
 	local t = 1 - math.abs(rotBefore - rotation)
-	local x = hillBefore[1] * t + hillAfter[1] * (1 - t)
-	local y = hillBefore[2] * t + hillAfter[2] * (1 - t)
+	local x = hillBefore.x * t + hillAfter.x * (1 - t)
+	local y = hillBefore.y * t + hillAfter.y * (1 - t)
 	return x, y
 end
 

@@ -30,7 +30,7 @@ function Player.init(planet, rotation)
 	function self.updatePos()
 		self.x, self.y = getRelativePositionToHill(self.position, self.planet)
 		local hillBefore, hillAfter = getBetweenHills(self.position, self.planet)
-		self.relativeRotation = findRotation(hillBefore[1], hillBefore[2], hillAfter[1], hillAfter[2])
+		self.relativeRotation = findRotation(hillBefore.x, hillBefore.y, hillAfter.x, hillAfter.y)
 		debug.update(debugVars.playerRelativeRotation, self.relativeRotation)
 	end
 
