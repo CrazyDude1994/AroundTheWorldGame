@@ -4,6 +4,8 @@ require "planet"
 require "camera"
 require "player"
 require "donut"
+require "physics"
+require "object"
 
 io.stdout:setvbuf("no")
 
@@ -20,7 +22,10 @@ local objects = {
 	--Table of cameras
 	cameras = {
 		mainCamera = Camera.init(0, 0, 1, 1)
-	}
+	},
+
+	--Physics objects
+	physics = {}
 }
 
 --Table of the variables that need to be debugged.
@@ -46,10 +51,13 @@ end
 function love.load()
 	--Create player on start
 	objects.drawable.thePlayer = Player.init(objects.drawable.planet, 0)
-	--Set camera position to look at player
-	objects.cameras.mainCamera.setPosition(objects.drawable.thePlayer.x, objects.drawable.thePlayer.y)
 	--Randomize main planet shape
 	objects.drawable.planet.randomizeShape(50)
+	--Create physics world
+	objects.physics.world = Physics.init(32)
+	objects.drawable.planet.initPhysicsShape(objects.physics.world.world)
+	--Set camera position to look at player
+	objects.cameras.mainCamera.setPosition(objects.drawable.thePlayer.x, objects.drawable.thePlayer.y)
 	--Add trees to planet
 	for i = 0, 359 * 2 do
 		objects.drawable.planet.addEnvironment(i / 2 + 0.25, 0, "data/images/nature/tree_1.png")
@@ -58,6 +66,14 @@ function love.load()
 	debug = Donut.init(10, 10)
 	debugVars.playerRotation = debug.add("Player position")
 	debugVars.playerRelativeRotation = debug.add("Relative rotation")
+	--TEST
+	local body = love.physics.newBody(objects.physics.world.world, 10, 11000, "dynamic") --place the body in the center of the world and make it dynamic, so it can move around
+	local shape = love.physics.newCircleShape(10) --the ball's shape has a radius of 20
+	local fixture = love.physics.newFixture(body, shape, 1) -- Attach fixture to body and give it a density of 1.
+	local object = Object.init(0, objects.drawable.planet)
+	object.setPhysics(body, shape, fixture)
+	objects.physics.world.addObject(object, 1)
+	objects.drawable.obj = object
 end
 
 function love.update(dt)
@@ -66,6 +82,9 @@ function love.update(dt)
 
 	--Weird solution. Should be changed
 	objects.drawable.thePlayer.update(dt)
+
+	--Update world physics
+	objects.physics.world.update(dt)
 
 	--Move camera controls
 	if love.keyboard.isDown("up") then

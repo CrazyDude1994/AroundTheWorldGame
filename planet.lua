@@ -14,6 +14,7 @@ function Planet.init(x, y, radius)
 	--Format: value = {x, y, rotation, image}
 	self.environment = {} --Planet environment information
 
+	self.physics = {} --Planet physics information
 
 	--Function for drawing planet
 	function self.draw()
@@ -23,7 +24,7 @@ function Planet.init(x, y, radius)
 		--Move drawing context to planet position
 		love.graphics.translate(self.x, self.y)
 		--Draw all of it hills
-		for i = 0, 358 do
+		for i = 0, #self.hills - 1 do
 			love.graphics.line(self.hills[i].x, self.hills[i].y, self.hills[i + 1].x, self.hills[i + 1].y)
 		end
 		--Draw first and the last one hills
@@ -51,6 +52,18 @@ function Planet.init(x, y, radius)
 			table.insert(self.environment, 
 				{x = x, y = y, rotation = rotation, image = image})
 		end
+	end
+
+	--Inits planet physics (body, fixture, shape). Should be called after shape has been made
+	function self.initPhysicsShape(world)
+		self.physics.body = love.physics.newBody(world, self.x, self.y, "static")
+		local vertices = {}
+		for i, v in pairs(self.hills) do
+			table.insert(vertices, v.x)
+			table.insert(vertices, v.y)
+		end
+		self.physics.shape = love.physics.newChainShape(true, unpack(vertices))
+		self.physics.fixture = love.physics.newFixture(self.physics.body, self.physics.shape, 1)
 	end
 
 	--Function that adds hill to the planet
