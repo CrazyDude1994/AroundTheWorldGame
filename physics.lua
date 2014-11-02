@@ -11,7 +11,6 @@ function Physics.init(pixelFactor)
 	function self.update(dt)
 		for i, v in pairs(self.objects) do
 			v.update(dt)
-			v.physics.body:applyForce(v.gX, v.gY)
 		end
 		self.world:update(dt)
 	end

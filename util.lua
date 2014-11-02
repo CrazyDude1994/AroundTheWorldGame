@@ -1,5 +1,9 @@
 function Lerp(a,b,k)
-	return (a + (b - a)*k);
+	local temp = k
+	while temp > 1 do
+		temp = temp - 1
+	end
+	return (a + (b - a)*temp);
 end
 
 function getXYFromRadian(rotation, radius, offset)
