@@ -67,9 +67,11 @@ function love.load()
 	debugVars.playerRotation = debug.add("Player position")
 	debugVars.playerRelativeRotation = debug.add("Relative rotation")
 	--TEST
-	local object = Object.init(2, objects.drawable.planet, 100, objects.physics.world, "data/images/objects/test_ship/ship.png")
-	objects.physics.world.addObject(object, 1)
-	table.insert(objects.drawable, object)
+	for i = 0, 359 do
+		local object = Object.init(i, objects.drawable.planet, 100, objects.physics.world, "data/images/objects/ball/ball.png", "circle")
+		objects.physics.world.addObject(object)
+		table.insert(objects.drawable, object)
+	end
 end
 
 function love.update(dt)

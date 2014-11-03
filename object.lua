@@ -2,7 +2,7 @@ require "util"
 
 Object = {}
 
-function Object.init(position, planet, height, world, imageDir)
+function Object.init(position, planet, height, world, imageDir, shapeType)
 
 	local self = {}
 	self.planet = planet
@@ -21,7 +21,9 @@ function Object.init(position, planet, height, world, imageDir)
 		love.graphics.setColor(255, 100, 50, 255)
 		love.graphics.translate(self.physics.body:getX(), self.physics.body:getY())
 		love.graphics.rotate(self.physics.body:getAngle())
-		love.graphics.draw(self.sprites.main, 0, 0, r, sx, sy, ox, oy, kx, ky)
+		local scaleX, scaleY = ((self.physics.shape:getRadius() / self.sprites.main:getWidth()) * 2), ((self.physics.shape:getRadius() / self.sprites.main:getHeight()) * 2)
+		local midX, midY = (self.sprites.main:getWidth() / 2), (self.sprites.main:getHeight() / 2)
+		love.graphics.draw(self.sprites.main, 0, 0, 0, scaleX, scaleY, midX, midY)
 		love.graphics.pop()
 	end
 
@@ -44,7 +46,12 @@ function Object.init(position, planet, height, world, imageDir)
 
 	local x, y = getXYFromRadian(position, planet.radius, height)
 	local body = love.physics.newBody(world.world, x, y, "dynamic")
-	local shape = love.physics.newRectangleShape(self.sprites.main:getWidth() / 32, self.sprites.main:getHeight() / love.physics.getMeter())
+	local shape
+	if shapeType == "rectangle" then
+		shape = love.physics.newRectangleShape(self.sprites.main:getWidth() / 32, self.sprites.main:getHeight() / love.physics.getMeter())
+	elseif shapeType == "circle" then
+		shape = love.physics.newCircleShape(10)
+	end
 	local fixture = love.physics.newFixture(body, shape, 1) -- Attach fixture to body and give it a density of 1.
 
 	self.physics = {body = body, shape = shape, fixture = fixture}
