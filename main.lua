@@ -67,17 +67,9 @@ function love.load()
 	debugVars.playerRotation = debug.add("Player position")
 	debugVars.playerRelativeRotation = debug.add("Relative rotation")
 	--TEST
-	for i = 0, 359 do
-		local x, y = getXYFromRadian(i, 11000, 0)
-		local body = love.physics.newBody(objects.physics.world.world, x, y, "dynamic") --place the body in the center of the world and make it dynamic, so it can move around
-		local shape = love.physics.newCircleShape(10) --the ball's shape has a radius of 20
-		local fixture = love.physics.newFixture(body, shape, 1) -- Attach fixture to body and give it a density of 1.
-		local object = Object.init(0, objects.drawable.planet)
-		object.setPhysics(body, shape, fixture)
-		fixture:setRestitution(0.4)
-		objects.physics.world.addObject(object, 1)
-		table.insert(objects.drawable, object)
-	end
+	local object = Object.init(2, objects.drawable.planet, 100, objects.physics.world, "data/images/objects/test_ship/ship.png")
+	objects.physics.world.addObject(object, 1)
+	table.insert(objects.drawable, object)
 end
 
 function love.update(dt)
