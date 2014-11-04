@@ -42,6 +42,7 @@ function Object.init(position, planet, height, world, imageDir, shapeType)
 		end
 	end
 
+
 	self.loadSprite(imageDir, "main")
 
 	local x, y = getXYFromRadian(position, planet.radius, height)

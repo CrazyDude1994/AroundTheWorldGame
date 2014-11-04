@@ -1,9 +1,8 @@
-require "donut"
+require "libs/donut"
 require "util"
 require "planet"
 require "camera"
 require "player"
-require "donut"
 require "physics"
 require "object"
 

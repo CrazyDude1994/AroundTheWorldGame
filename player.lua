@@ -1,5 +1,5 @@
 require "util"
-require "AnAL"
+require "libs/AnAL"
 
 Player = {}
 
