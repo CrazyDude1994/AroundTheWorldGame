@@ -40,11 +40,19 @@ function Object.init(position, planet, height, rotation, world, imageDir, shapeT
 			local vX = pX - x
 			local vY = pY - y
 			local length = math.sqrt(math.pow(vX, 2) + math.pow(vY, 2))
+			local orbit = self.planet.radius
+			local height = length - self.planet.radius
+			local force = 1 - (height / orbit)
+			if (force < 0) then
+				self.planet = nil
+			end
 			local dX = (vX / length)
 			local dY = (vY / length)
-			gX = dX * 9.81 * self.physics.body:getMass() * love.physics.getMeter()
-			gY = dY * 9.81 * self.physics.body:getMass() * love.physics.getMeter()
-			self.physics.body:applyForce(gX, gY, x, y)
+			gX = dX * (9.81 * force) * self.physics.body:getMass() * love.physics.getMeter()
+			gY = dY * (9.81 * force) * self.physics.body:getMass() * love.physics.getMeter()
+			if self.planet then
+				self.physics.body:applyForce(gX, gY, x, y)
+			end
 		end
 	end
 

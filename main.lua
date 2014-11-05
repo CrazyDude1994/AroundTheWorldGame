@@ -64,12 +64,8 @@ function love.load()
 	debug = Donut.init(10, 10)
 	debugVars.playerRotation = debug.add("Player position")
 	debugVars.playerRelativeRotation = debug.add("Relative rotation")
-	--add some other planets
-	for i = 2, 100 do
-		table.insert(objects.drawable, Planet.init(0, i * 20000, love.math.random(3000, 10000), love.math.random(30)))
-	end
 	--TEST
-	objects.drawable.ship = Ship.init(0, objects.drawable.planet, 50, "data/images/objects/test_ship/ship.png", objects.physics.world)
+	objects.drawable.ship = Ship.init(0, objects.drawable.planet, 40, "data/images/objects/test_ship/ship.png", objects.physics.world)
 end
 
 function love.update(dt)
