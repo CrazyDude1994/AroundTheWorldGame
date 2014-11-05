@@ -1,11 +1,18 @@
+local screenX, screenY = love.graphics.getWidth(), love.graphics.getHeight()
+
 Camera = {}
 
-function Camera.init(x, y, scaleX, scaleY)
+function Camera.init(x, y, scaleX, scaleY, angle)
 
 	local self = {}
 
 	self.x = x or 0
 	self.y = y or 0
+	if angle then
+		self.rotation = angle
+	else
+		self.rotation = 0
+	end
 	self.scaleX = scaleX or 1
 	self.scaleY = scaleY or 1
 
@@ -19,6 +26,19 @@ function Camera.init(x, y, scaleX, scaleY)
 		self.x = self.x + x or 0
 		self.y = self.y + y or 0
 		self.update()
+	end
+
+	function self.rotate(angle)
+		self.rotation = self.rotation + math.rad(angle)
+		self.update()
+	end
+
+	function self.setRotation(angle)
+		self.rotation = math.rad(angle)
+	end
+
+	function self.getRotation()
+		return self.rotation
 	end
 
 	function self.getPosition()
@@ -51,7 +71,11 @@ function Camera.init(x, y, scaleX, scaleY)
 	end
 
 	function self.update()
+		love.graphics.setBackgroundColor(255, 255, 255, 255)
+		love.graphics.translate(-self.x + (screenX / 2), -self.y + (screenY / 2))
+		love.graphics.translate(self.x, self.y)
 		love.graphics.scale(self.scaleX, self.scaleY)
+		love.graphics.rotate(self.rotation)
 		love.graphics.translate(-self.x, -self.y)
 	end
 
