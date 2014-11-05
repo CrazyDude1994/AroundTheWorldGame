@@ -5,6 +5,7 @@ require "camera"
 require "player"
 require "physics"
 require "object"
+require "ship"
 
 io.stdout:setvbuf("no")
 
@@ -66,11 +67,7 @@ function love.load()
 	debugVars.playerRotation = debug.add("Player position")
 	debugVars.playerRelativeRotation = debug.add("Relative rotation")
 	--TEST
-	for i = 0, 359 do
-		local object = Object.init(i, objects.drawable.planet, 100, objects.physics.world, "data/images/objects/ball/ball.png", "circle")
-		objects.physics.world.addObject(object)
-		table.insert(objects.drawable, object)
-	end
+	objects.drawable.ship = Ship.init(2, objects.drawable.planet, 100, "data/images/objects/test_ship/ship.png", objects.physics.world)
 end
 
 function love.update(dt)
@@ -85,17 +82,21 @@ function love.update(dt)
 
 	--Move camera controls
 	if love.keyboard.isDown("up") then
-		objects.cameras.mainCamera.move(0, -100 * dt)
-	end
-	if love.keyboard.isDown("left") then
-		objects.cameras.mainCamera.move(-100 * dt, 0)
+		objects.drawable.ship.increaseThrottle(dt * 50)
 	end
 	if love.keyboard.isDown("down") then
-		objects.cameras.mainCamera.move(0, 100 * dt)
+		objects.drawable.ship.decreaseThrottle(dt * 50)
 	end
 	if love.keyboard.isDown("right") then
-		objects.cameras.mainCamera.move(100 * dt, 0)
+		objects.drawable.ship.turnRight(100)
+	elseif love.keyboard.isDown("left") then
+		objects.drawable.ship.turnLeft(100)
+	else
+		objects.drawable.ship.fix()
 	end
+
+	objects.cameras.mainCamera.setPosition(objects.drawable.ship.object.physics.body:getX(), objects.drawable.ship.object.physics.body:getY())
+	--objects.cameras.mainCamera.setRotation(-math.deg(objects.drawable.ship.object.physics.body:getAngle()))
 
 	--Player movement controls
 	if love.keyboard.isDown("a") then
