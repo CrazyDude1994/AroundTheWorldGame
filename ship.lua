@@ -15,7 +15,7 @@ function Ship.init(position, planet, height, spriteName, world)
 		emissionRate = 1500,
 		lifetime = -1,
 		particleLife = 0,
-		color = { 210, 180, 40, 123, 255, 255, 255, 123 },
+		color = { 255, 255, 255, 255, 250, 100, 0, 123 },
 		size = { 0, 1, 1 },
 		speed = { 131, 300 },
 		spread = math.rad(5)
@@ -53,6 +53,7 @@ function Ship.init(position, planet, height, spriteName, world)
 		self.particleSystem:setPosition(self.object.physics.body:getWorldPoint(0, 32))
 		self.particleSystem:setDirection(math.rad(math.deg(self.object.physics.body:getAngle()) + 90))
 		self.particleSystem:setParticleLifetime(0, (self.throttle / 450))
+		self.particleSystem:setSpread(math.rad((180 - (180 * (self.throttle / 450)))))
 		self.particleSystem:update(dt)
 	end
 

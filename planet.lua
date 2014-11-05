@@ -1,5 +1,5 @@
 require "util"
-require "square-diamond"
+require "midpoint-displacement"
 
 Planet = {}
 
@@ -73,9 +73,14 @@ function Planet.init(x, y, radius)
 	end
 
 	--Randomize shape. For testing purposes only. Should be depricated and changed to mid-replacement algorithm
-	function self.randomizeShape(max, step, min)
+	function self.randomizeShape(step)
+		local hills = {}
 		for i = 0, 359, step or 1 do
-			self.addHill(i, love.math.random(min or 0, max))
+			hills[i] = 0
+		end
+		generateHeightMap(hills, 0, 359, 360, 10)
+		for i = 0, 359, step or 1 do
+			self.addHill(i, hills[i])
 		end
 	end
 

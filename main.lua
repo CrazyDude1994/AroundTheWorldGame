@@ -52,7 +52,7 @@ function love.load()
 	--Create player on start
 	objects.drawable.thePlayer = Player.init(objects.drawable.planet, 0)
 	--Randomize main planet shape
-	objects.drawable.planet.randomizeShape(50)
+	objects.drawable.planet.randomizeShape(1)
 	--Create physics world
 	objects.physics.world = Physics.init(32)
 	objects.drawable.planet.initPhysicsShape(objects.physics.world.world)
@@ -67,7 +67,7 @@ function love.load()
 	debugVars.playerRotation = debug.add("Player position")
 	debugVars.playerRelativeRotation = debug.add("Relative rotation")
 	--TEST
-	objects.drawable.ship = Ship.init(2, objects.drawable.planet, 100, "data/images/objects/test_ship/ship.png", objects.physics.world)
+	objects.drawable.ship = Ship.init(0, objects.drawable.planet, 50, "data/images/objects/test_ship/ship.png", objects.physics.world)
 end
 
 function love.update(dt)
