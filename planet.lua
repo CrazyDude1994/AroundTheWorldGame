@@ -3,7 +3,7 @@ require "midpoint-displacement"
 
 Planet = {}
 
-function Planet.init(x, y, radius)
+function Planet.init(x, y, radius, roughness)
 	local self = {}
 
 	self.radius = radius --Planet radius
@@ -11,6 +11,7 @@ function Planet.init(x, y, radius)
 	self.y = y --Planet Y position in world coordinates
 	--Format: key = rotation, value - {x, y}
 	self.hills = {} --Planet hills information
+	self.vertices = {}
 	--Format: value = {x, y, rotation, image}
 	self.environment = {} --Planet environment information
 
@@ -23,12 +24,7 @@ function Planet.init(x, y, radius)
 		love.graphics.setColor(0, 0, 0, 255)
 		--Move drawing context to planet position
 		love.graphics.translate(self.x, self.y)
-		--Draw all of it hills
-		for i = 0, #self.hills - 1 do
-			love.graphics.line(self.hills[i].x, self.hills[i].y, self.hills[i + 1].x, self.hills[i + 1].y)
-		end
-		--Draw first and the last one hills
-		love.graphics.line(self.hills[0].x, self.hills[0].y, self.hills[#self.hills].x, self.hills[#self.hills].y)
+		love.graphics.polygon("line", self.vertices)
 		love.graphics.setColor(255, 255, 255, 255)
 		--Draw planet environment
 		for i, v in pairs(self.environment) do
@@ -54,6 +50,14 @@ function Planet.init(x, y, radius)
 		end
 	end
 
+	--Updates vertices
+	function self.updateVertices()
+		for i, v in pairs(self.hills) do
+			table.insert(self.vertices, v.x)
+			table.insert(self.vertices, v.y)
+		end
+	end
+
 	--Inits planet physics (body, fixture, shape). Should be called after shape has been made
 	function self.initPhysicsShape(world)
 		self.physics.body = love.physics.newBody(world, self.x, self.y, "static")
@@ -73,21 +77,19 @@ function Planet.init(x, y, radius)
 	end
 
 	--Randomize shape. For testing purposes only. Should be depricated and changed to mid-replacement algorithm
-	function self.randomizeShape(step)
+	function self.randomizeShape(roughness)
 		local hills = {}
-		for i = 0, 359, step or 1 do
+		for i = 0, 359 do
 			hills[i] = 0
 		end
-		generateHeightMap(hills, 0, 359, 360, 10)
-		for i = 0, 359, step or 1 do
+		generateHeightMap(hills, 0, 359, 360, roughness or 0)
+		for i = 0, 359 do
 			self.addHill(i, hills[i])
 		end
+		self.updateVertices()
 	end
 
-	--Init planet shape
-	for i = 0, 359 do
-		self.addHill(i, 0)
-	end
+	self.randomizeShape(roughness)
 
 	return self
 end

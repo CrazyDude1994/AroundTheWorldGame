@@ -16,7 +16,7 @@ local screenX, screenY = love.graphics.getWidth(), love.graphics.getHeight()
 local objects = {
 	--Objects that need to be drawed. Must have Draw method
 	drawable = {
-		planet = Planet.init(0, 0, 10000)
+		planet = Planet.init(0, 0, 10000, 20)
 	},
 
 	--Table of cameras
@@ -51,8 +51,6 @@ end
 function love.load()
 	--Create player on start
 	objects.drawable.thePlayer = Player.init(objects.drawable.planet, 0)
-	--Randomize main planet shape
-	objects.drawable.planet.randomizeShape(1)
 	--Create physics world
 	objects.physics.world = Physics.init(32)
 	objects.drawable.planet.initPhysicsShape(objects.physics.world.world)
@@ -66,6 +64,10 @@ function love.load()
 	debug = Donut.init(10, 10)
 	debugVars.playerRotation = debug.add("Player position")
 	debugVars.playerRelativeRotation = debug.add("Relative rotation")
+	--add some other planets
+	for i = 2, 100 do
+		table.insert(objects.drawable, Planet.init(0, i * 20000, love.math.random(3000, 10000), love.math.random(30)))
+	end
 	--TEST
 	objects.drawable.ship = Ship.init(0, objects.drawable.planet, 50, "data/images/objects/test_ship/ship.png", objects.physics.world)
 end
@@ -96,7 +98,7 @@ function love.update(dt)
 	end
 
 	objects.cameras.mainCamera.setPosition(objects.drawable.ship.object.physics.body:getX(), objects.drawable.ship.object.physics.body:getY())
-	--objects.cameras.mainCamera.setRotation(-math.deg(objects.drawable.ship.object.physics.body:getAngle()))
+	objects.cameras.mainCamera.setRotation(-math.deg(objects.drawable.ship.object.physics.body:getAngle()))
 
 	--Player movement controls
 	if love.keyboard.isDown("a") then
@@ -113,8 +115,8 @@ function love.update(dt)
 
 	--Scale camera controls
 	if love.keyboard.isDown("w") then
-		objects.cameras.mainCamera.scale(2 * dt, 2 * dt)
+		objects.cameras.mainCamera.scale(1.1 * dt, 1.1 * dt)
 	elseif love.keyboard.isDown("s") then
-		objects.cameras.mainCamera.scale(-2 * dt, -2 * dt)
+		objects.cameras.mainCamera.scale(-1.1 * dt, -1.1 * dt)
 	end
 end
