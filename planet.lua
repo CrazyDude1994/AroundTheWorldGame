@@ -11,8 +11,11 @@ function Planet.init(x, y, radius, roughness)
 	self.y = y --Planet Y position in world coordinates
 	--Format: key = rotation, value - {x, y}
 	self.hills = {} --Planet hills information
-	self.vertices = {}
+	self.vertices = {} --Vertices
+	self.mesh = nil
 	--Format: value = {x, y, rotation, image}
+	self.sprite = love.graphics.newImage("data/images/nature/ground.jpg")
+	self.sprite:setWrap("repeat")
 	self.environment = {} --Planet environment information
 
 	self.physics = {} --Planet physics information
@@ -21,10 +24,10 @@ function Planet.init(x, y, radius, roughness)
 	function self.draw()
 		--Push matrix
 		love.graphics.push()
-		love.graphics.setColor(0, 0, 0, 255)
+		love.graphics.setColor(255, 255, 255, 255)
 		--Move drawing context to planet position
 		love.graphics.translate(self.x, self.y)
-		love.graphics.polygon("line", self.vertices)
+		love.graphics.draw(self.mesh)
 		love.graphics.setColor(255, 255, 255, 255)
 		--Draw planet environment
 		for i, v in pairs(self.environment) do
@@ -32,6 +35,26 @@ function Planet.init(x, y, radius, roughness)
 		end
 		--Pop matrix back
 		love.graphics.pop()
+	end
+
+	--Function that generates 2D mesh for the planet
+	function self.generateMesh()
+		local vert = {}
+		table.insert(vert, {0, 0, 100, 100, 255, 255, 255, 255})
+		for i, v in pairs(self.hills) do
+			table.insert(vert, {v.x, v.y, 100, 100, 255, 255, 255, 255})
+		end
+		self.mesh = love.graphics.newMesh(vert, self.sprite, "triangles")
+		local map = {}
+		for i = 1, #vert - 2 do
+			table.insert(map, 1)
+			table.insert(map, i + 1)
+			table.insert(map, i + 2)
+		end
+		table.insert(map, 1)
+		table.insert(map, #vert)
+		table.insert(map, 2)
+		self.mesh:setVertexMap(map)
 	end
 
 	--Function that adds environment to the planet
@@ -90,6 +113,7 @@ function Planet.init(x, y, radius, roughness)
 	end
 
 	self.randomizeShape(roughness)
+	self.generateMesh()
 
 	return self
 end
